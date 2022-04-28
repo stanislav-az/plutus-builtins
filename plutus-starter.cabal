@@ -42,6 +42,9 @@ library
     import: lang
     exposed-modules:
       MyModule
+      Builtins
+      Internal
+      Hash
       Plutus.Contracts.Game
     build-depends:
       base >= 4.9 && < 5,
@@ -58,6 +61,8 @@ library
       plutus-tx-plugin -any,
       text -any,
       lens -any,
+      cryptonite,
+      memory,
     hs-source-dirs: src examples/src
 
 test-suite plutus-example-projects-test
@@ -80,7 +85,7 @@ test-suite plutus-example-projects-test
     tasty-hunit -any,
     text -any,
     tasty-hedgehog >=0.2.0.0
-    
+
 
 executable plutus-starter-pab
   import: lang

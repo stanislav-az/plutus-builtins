@@ -58,6 +58,9 @@ import           PlutusTx.Prelude      hiding (pure, (<$>))
 import qualified Prelude               as Haskell
 import           Plutus.Trace.Emulator (EmulatorTrace)
 import qualified Plutus.Trace.Emulator as Trace
+import Builtins
+-- Substituting sha2 for keccak produces compilation error:
+-- GHC Core to PLC plugin: E043:Error: Reference to a name which is not a local, a builtin, or an external INLINABLE function: Variable Internal.keccak_256
 
 newtype HashedString = HashedString BuiltinByteString deriving newtype (PlutusTx.ToData, PlutusTx.FromData, PlutusTx.UnsafeFromData)
 
@@ -85,7 +88,7 @@ gameInstance = Scripts.mkTypedValidator @Game
 -- create a data script for the guessing game by hashing the string
 -- and lifting the hash to its on-chain representation
 hashString :: Haskell.String -> HashedString
-hashString = HashedString . sha2_256 . toBuiltin . C.pack
+hashString = HashedString . keccak_256 . toBuiltin . C.pack
 
 -- create a redeemer script for the guessing game by lifting the
 -- string to its on-chain representation
@@ -97,7 +100,7 @@ validateGuess :: HashedString -> ClearString -> ScriptContext -> Bool
 validateGuess hs cs _ = isGoodGuess hs cs
 
 isGoodGuess :: HashedString -> ClearString -> Bool
-isGoodGuess (HashedString actual) (ClearString guess') = actual == sha2_256 guess'
+isGoodGuess (HashedString actual) (ClearString guess') = actual == keccak_256 guess'
 
 -- | The validator script of the game.
 gameValidator :: Validator
