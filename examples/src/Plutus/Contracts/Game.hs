@@ -61,6 +61,11 @@ import qualified Plutus.Trace.Emulator as Trace
 import Builtins
 -- Substituting sha2 for keccak produces compilation error:
 -- GHC Core to PLC plugin: E043:Error: Reference to a name which is not a local, a builtin, or an external INLINABLE function: Variable Internal.keccak_256
+-- with -O1
+-- No unfolding
+-- see Note [Making sure unfoldings are present] for explanation
+-- with -O0
+-- OtherCon []
 
 newtype HashedString = HashedString BuiltinByteString deriving newtype (PlutusTx.ToData, PlutusTx.FromData, PlutusTx.UnsafeFromData)
 
