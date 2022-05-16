@@ -16,28 +16,10 @@
 {-# LANGUAGE TypeFamilies               #-}
 {-# LANGUAGE TypeOperators              #-}
 {-# LANGUAGE ViewPatterns               #-}
-
+{-# LANGUAGE OverloadedStrings #-}
 
 -- | A guessing game
-module Plutus.Contracts.Game
-    ( lock
-    , guess
-    , game
-    , GameSchema
-    , GuessParams(..)
-    , LockParams(..)
-    -- * Scripts
-    , gameValidator
-    , hashString
-    , clearString
-    -- * Address
-    , gameAddress
-    , validateGuess
-    -- * Traces
-    , guessTrace
-    , lockTrace
-    , correctGuessTrace
-    ) where
+module Plutus.Contracts.Game where
 
 import           Control.Monad         (void)
 import qualified Data.ByteString.Char8 as C
@@ -58,6 +40,16 @@ import           PlutusTx.Prelude      hiding (pure, (<$>))
 import qualified Prelude               as Haskell
 import           Plutus.Trace.Emulator (EmulatorTrace)
 import qualified Plutus.Trace.Emulator as Trace
+import qualified Data.ByteString as BS
+
+bs :: BS.ByteString
+bs = "CAn\b\184\a\173\240\DC4\NAK\145\241$\185\193\DC3\220\172\171\161\188I\204t\209\f\224\209|\DC2&g"
+
+-- Prelude Plutus.Contracts.Game PlutusTx.Prelude PlutusTx.Prelude MyModule> b = toBuiltin bs
+-- Prelude Plutus.Contracts.Game PlutusTx.Prelude PlutusTx.Prelude MyModule> b
+-- "CAn\b\184\a\173\240\DC4\NAK\145\241$\185\193\DC3\220\172\171\161\188I\204t\209\f\224\209|\DC2&g"
+-- Prelude Plutus.Contracts.Game PlutusTx.Prelude PlutusTx.Prelude MyModule> sha2_256 b
+-- "f\162\SOH\CAN\ACKX\142<\215\153T\v\171\t\156\204\US\EM=m\228\215lH\243\181\219V\211\138\251\ENQ"
 
 newtype HashedString = HashedString BuiltinByteString deriving newtype (PlutusTx.ToData, PlutusTx.FromData, PlutusTx.UnsafeFromData)
 
